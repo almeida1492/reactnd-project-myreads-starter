@@ -5,10 +5,10 @@ import './App.css'
 
 class BooksApp extends React.Component {
 
-  CURRENTLY_READING_FLAG = 0
-  WANT_TO_READ_FLAG = 1
-  READ_FLAG = 2
-  NONE_FLAG = 3
+  CURRENTLY_READING_FLAG = 'currentlyReading'
+  WANT_TO_READ_FLAG = 'wantToRead'
+  READ_FLAG = 'read'
+  NONE_FLAG = 'none'
 
   constructor(props) {
     super(props);
@@ -62,31 +62,7 @@ class BooksApp extends React.Component {
   }
 
   updateBookStatus = (event, targetTitle) => {
-    let newStatus
-    switch (event.target.value) {
-        case 'currentlyReading':
-            {
-                newStatus = this.CURRENTLY_READING_FLAG
-                break
-            }
-        case 'wantToRead':
-            {
-                newStatus = this.WANT_TO_READ_FLAG
-                break
-            }
-        case 'read':
-            {
-                newStatus = this.READ_FLAG
-                break
-            }
-        case 'none':
-            {
-                newStatus = this.NONE_FLAG
-                break
-            }
-        default:
-            break
-    }
+    let newStatus = event.target.value
     this.setState((prevState) => ({
         allBooks: prevState.allBooks.map(book => {
             if (book.title === targetTitle) {
@@ -130,14 +106,17 @@ class BooksApp extends React.Component {
           <Shelf 
             title='Currently Reading' 
             books={allBooks.filter(book => book.status === this.CURRENTLY_READING_FLAG)}
+            shelfFlag={this.CURRENTLY_READING_FLAG}
             updateBookStatus={this.updateBookStatus}/>
           <Shelf 
             title='Want to Read' 
             books={allBooks.filter(book => book.status === this.WANT_TO_READ_FLAG)} 
+            shelfFlag={this.WANT_TO_READ_FLAG}
             updateBookStatus={this.updateBookStatus}/>
           <Shelf 
             title='Read' 
             books={allBooks.filter(book => book.status === this.READ_FLAG)} 
+            shelfFlag={this.READ_FLAG}
             updateBookStatus={this.updateBookStatus}/>
         </div>
         <div className="open-search">
