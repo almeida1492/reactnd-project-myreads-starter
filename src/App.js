@@ -75,17 +75,14 @@ class BooksApp extends React.Component {
           <Shelf 
             title='Currently Reading' 
             books={allBooks.filter(book => book.shelf === this.CURRENTLY_READING_FLAG)}
-            shelfFlag={this.CURRENTLY_READING_FLAG}
             updateBookStatus={this.updateBookStatus}/>
           <Shelf 
             title='Want to Read' 
             books={allBooks.filter(book => book.shelf === this.WANT_TO_READ_FLAG)} 
-            shelfFlag={this.WANT_TO_READ_FLAG}
             updateBookStatus={this.updateBookStatus}/>
           <Shelf 
             title='Read' 
             books={allBooks.filter(book => book.shelf === this.READ_FLAG)} 
-            shelfFlag={this.READ_FLAG}
             updateBookStatus={this.updateBookStatus}/>
         </div>
         <div className="open-search">

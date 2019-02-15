@@ -4,7 +4,7 @@ import Book from './Book'
 class Shelf extends Component{
 
 	render(){
-		const { title, books, shelf, updateBookStatus } = this.props
+		const { title, books, updateBookStatus } = this.props
 		return(
 			<div className="bookshelf">
 				<h2 className="bookshelf-title">{title}</h2>
@@ -14,7 +14,6 @@ class Shelf extends Component{
 								<li key={book.title}>
 									<Book 
 										data={book} 
-										shelf={shelf} 
 										updateBookStatus={updateBookStatus}/>
 								</li>
 							))}
