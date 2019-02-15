@@ -3,13 +3,14 @@ import React, { Component } from 'react'
 class Book extends Component{
 
 	render(){
-		const { data, shelfFlag, updateBookStatus } = this.props
+		const { data, shelf, updateBookStatus } = this.props
+		const imageUrl = `url("${data.imageLinks.smallThumbnail}")`
 		return(
 			<div className="book">
 				<div className="book-top">
-					<div className="book-cover" style={{ width: 128, height: 193, backgroundImage: data.cover }}></div>
+					<div className="book-cover" style={{ width: 128, height: 193, backgroundImage: imageUrl }}></div>
 					<div className="book-shelf-changer">
-						<select defaultValue={shelfFlag} onChange={(e) => updateBookStatus(e, data.title)}>
+						<select defaultValue={shelf} onChange={(e) => updateBookStatus(e, data.title)}>
 							<option value="move" disabled>Move to...</option>
 							<option value="currentlyReading">Currently Reading</option>
 							<option value="wantToRead">Want to Read</option>
