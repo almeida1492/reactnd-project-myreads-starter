@@ -2,14 +2,9 @@ import React from 'react'
 import * as BooksAPI from './BooksAPI'
 import Shelf from './Shelf'
 import './App.css'
-//console.log('DEBUG', )
+import strings from './resources/strings.js'
 
 class BooksApp extends React.Component {
-
-  CURRENTLY_READING_FLAG = 'currentlyReading'
-  WANT_TO_READ_FLAG = 'wantToRead'
-  READ_FLAG = 'read'
-  NONE_FLAG = 'none'
 
   constructor(props) {
     super(props);
@@ -49,7 +44,6 @@ class BooksApp extends React.Component {
 
   render() {
     const { allBooks } = this.state
-    console.log('DEBUG', allBooks)
     return (
       <div className="app">
         {this.state.showSearchPage ? (
@@ -77,9 +71,18 @@ class BooksApp extends React.Component {
           <h1>MyReads</h1>
         </div>
         <div className="list-books-content">
-          <Shelf title='Currently Reading' books={allBooks.filter(book => book.shelf === this.CURRENTLY_READING_FLAG)} updateBookStatus={this.updateBookStatus}/>
-          <Shelf title='Want to Read' books={allBooks.filter(book => book.shelf === this.WANT_TO_READ_FLAG)} updateBookStatus={this.updateBookStatus}/>
-          <Shelf title='Read' books={allBooks.filter(book => book.shelf === this.READ_FLAG)} updateBookStatus={this.updateBookStatus}/>
+          <Shelf 
+            title={strings.currently_reading_title} 
+            books={allBooks.filter(book => book.shelf === strings.currently_reading_value)} 
+            updateBookStatus={this.updateBookStatus}/>
+          <Shelf 
+            title={strings.want_to_read_title} 
+            books={allBooks.filter(book => book.shelf === strings.want_to_read_value)} 
+            updateBookStatus={this.updateBookStatus}/>
+          <Shelf 
+            title={strings.read_title} 
+            books={allBooks.filter(book => book.shelf === strings.read_value)} 
+            updateBookStatus={this.updateBookStatus}/>
         </div>
         <div className="open-search">
           <button onClick={() => this.setState({ showSearchPage: true })}>Add a book</button>

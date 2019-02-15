@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import strings from './resources/strings.js'
 
 class Book extends Component{
 
@@ -11,11 +12,11 @@ class Book extends Component{
 					<div className="book-cover" style={{ width: 128, height: 193, backgroundImage: imageUrl }}></div>
 					<div className="book-shelf-changer">
 						<select defaultValue={data.shelf} onChange={(e) => updateBookStatus(data, e.target.value)}>
-							<option value="move" disabled>Move to...</option>
-							<option value="currentlyReading">Currently Reading</option>
-							<option value="wantToRead">Want to Read</option>
-							<option value="read">Read</option>
-							<option value="none">None</option>
+							<option value={strings.move_value} disabled> {strings.move_title} </option>
+							<option value={strings.currently_reading_value}> {strings.currently_reading_title} </option>
+							<option value={strings.want_to_read_value}> {strings.want_to_read_title} </option>
+							<option value={strings.read_value}> {strings.read_title} </option>
+							<option value={strings.none_value}> {strings.none_title} </option>
 						</select>
 					</div>
 				</div>
