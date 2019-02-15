@@ -2,6 +2,7 @@ import React from 'react'
 import * as BooksAPI from './BooksAPI'
 import Shelf from './Shelf'
 import './App.css'
+//console.log('DEBUG', )
 
 class BooksApp extends React.Component {
 
@@ -26,25 +27,29 @@ class BooksApp extends React.Component {
     showSearchPage: false
   }
 
-  updateBookStatus = (event, targetTitle) => {
-    let newStatus = event.target.value
-    this.setState((prevState) => ({
-        allBooks: prevState.allBooks.map(book => {
-            if (book.title === targetTitle) {
-                book.status = newStatus
-            }
-            return book
-        })
+  componentDidMount(){
+    BooksAPI.getAll().then((books) => this.setState({
+      allBooks: books
     }))
   }
 
-  componentDidMount(){
-    BooksAPI.getAll().then((books) => this.setState({allBooks: books})) 
+  updateBookStatus = (book, shelf) => {
+
+    const { allBooks } = this.state
+    const allBooksCopy = [...allBooks]
+
+    BooksAPI.update(book, shelf).then(res => {
+      allBooksCopy.map((oldBook) => oldBook.id === book.id
+        ? book.shelf = shelf
+        : 0)
+      this.setState(() => ({ allBooks: allBooksCopy }))
+      return 0
+    })
   }
 
   render() {
     const { allBooks } = this.state
-    console.log('STATE', this.state)
+    console.log('DEBUG', allBooks)
     return (
       <div className="app">
         {this.state.showSearchPage ? (
@@ -72,18 +77,9 @@ class BooksApp extends React.Component {
           <h1>MyReads</h1>
         </div>
         <div className="list-books-content">
-          <Shelf 
-            title='Currently Reading' 
-            books={allBooks.filter(book => book.shelf === this.CURRENTLY_READING_FLAG)}
-            updateBookStatus={this.updateBookStatus}/>
-          <Shelf 
-            title='Want to Read' 
-            books={allBooks.filter(book => book.shelf === this.WANT_TO_READ_FLAG)} 
-            updateBookStatus={this.updateBookStatus}/>
-          <Shelf 
-            title='Read' 
-            books={allBooks.filter(book => book.shelf === this.READ_FLAG)} 
-            updateBookStatus={this.updateBookStatus}/>
+          <Shelf title='Currently Reading' books={allBooks.filter(book => book.shelf === this.CURRENTLY_READING_FLAG)} updateBookStatus={this.updateBookStatus}/>
+          <Shelf title='Want to Read' books={allBooks.filter(book => book.shelf === this.WANT_TO_READ_FLAG)} updateBookStatus={this.updateBookStatus}/>
+          <Shelf title='Read' books={allBooks.filter(book => book.shelf === this.READ_FLAG)} updateBookStatus={this.updateBookStatus}/>
         </div>
         <div className="open-search">
           <button onClick={() => this.setState({ showSearchPage: true })}>Add a book</button>
