@@ -3,15 +3,30 @@ import strings from './resources/strings.js'
 
 class Book extends Component{
 
+	constructor(props) {
+		super(props);
+      	this.getThumbnailUrl = this.getThumbnailUrl.bind(this)
+	}
+
+	getThumbnailUrl = () => {
+		const { data } = this.props
+		let imageUrl = ''
+		if (data.imageLinks !== undefined) {
+			imageUrl = `url("${data.imageLinks.smallThumbnail}")`
+		}
+		return imageUrl
+	}
+
 	render(){
-		const { data, updateBookStatus } = this.props
-		const imageUrl = `url("${data.imageLinks.smallThumbnail}")`
+		const { data, onShelfChange } = this.props
+		const imageUrl = this.getThumbnailUrl()
+		this.getThumbnailUrl()
 		return(
 			<div className="book">
 				<div className="book-top">
 					<div className="book-cover" style={{ width: 128, height: 193, backgroundImage: imageUrl }}></div>
 					<div className="book-shelf-changer">
-						<select defaultValue={data.shelf} onChange={(e) => updateBookStatus(data, e.target.value)}>
+						<select defaultValue={data.shelf} onChange={(e) => onShelfChange(data, e.target.value)}>
 							<option value={strings.move_value} disabled> {strings.move_title} </option>
 							<option value={strings.currently_reading_value}> {strings.currently_reading_title} </option>
 							<option value={strings.want_to_read_value}> {strings.want_to_read_title} </option>
