@@ -19,7 +19,7 @@ class BooksApp extends React.Component {
 
    state = {
    	allBooks: [],
-   	filteredBooks: []
+   	filteredBooks: [],
    }
 
    componentDidMount() {
@@ -47,10 +47,11 @@ class BooksApp extends React.Component {
    }
 
     fetchFilteredBooks = (event) => {
-    	if (event.target.value !== '') {
-    		BooksAPI.search(event.target.value).then((books) => {
+    	let value = event.target.value
+    	if (value !== '') {
+    		BooksAPI.search(value).then((books) => {
     			if (books.length > 0) {
-    				this.setFilteredBooks(books)
+    				this.setFilteredBooks(books, value)
     			} else {
     				this.setState({ filteredBooks: [] })
     			}
@@ -61,22 +62,24 @@ class BooksApp extends React.Component {
     	}
    }
 
-    setFilteredBooks = (filteredBooks) => {
+    setFilteredBooks = (filteredBooks, value) => {
     	const { allBooks } = this.state
-    	let tempFilteredBooks = []
 
-    	filteredBooks = filteredBooks.map((book) => book = { ...book, shelf: strings.none_value })
-
-    	tempFilteredBooks = filteredBooks.map((filteredBook) => {allBooks.map((bookInShelf) => {
+    	filteredBooks = filteredBooks.map((filteredBook) => {
+    		filteredBook = { ...filteredBook, shelf: strings.none_value }
+    		allBooks.map((bookInShelf) => {
     			if (bookInShelf.id === filteredBook.id) {
     				filteredBook = { ...filteredBook, shelf: bookInShelf.shelf }
     			}
     			return 0
     		})
     		return filteredBook
-    	})
-    	
-    	this.setState(() => ({ filteredBooks: tempFilteredBooks }))
+    	})	
+    	this.setState(() => ({ filteredBooks: filteredBooks }))
+    }
+
+    cleanFilteredBooks = () => {
+    	this.setState({ filteredBooks: [] })
     }
 
    render() {
@@ -113,7 +116,8 @@ class BooksApp extends React.Component {
 				<Route exact path='/search' render={() => (
 					<div className="search-books">
 						<SearchBar 
-							fetchFilteredBooks={ this.fetchFilteredBooks }/>
+							fetchFilteredBooks={ this.fetchFilteredBooks }
+							cleanFilteredBooks={this.cleanFilteredBooks}/>
 						<Shelf
 							title=''
 							books={ filteredBooks }
