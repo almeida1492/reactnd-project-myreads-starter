@@ -14,7 +14,7 @@ class BooksApp extends React.Component {
 		super(props);
       this.updateBookInShelfStatus = this.updateBookInShelfStatus.bind(this)
       this.fetchFilteredBooks = this.fetchFilteredBooks.bind(this)
-      // this.checkBookStatus = this.checkBookStatus.bind(this)
+      this.setFilteredBooks = this.setFilteredBooks.bind(this)
    }
 
    state = {
@@ -38,47 +38,46 @@ class BooksApp extends React.Component {
             this.setState(() => ({ allBooks: allBooksCopy }))
             return 0
       })
-    }
+   }
 
     addBookToShelf = (book, shelf) => {
     	book.shelf = shelf
     	BooksAPI.update(book, shelf).then((res) => 
     		this.setState((prevState) => ({ allBooks: [...prevState.allBooks, book] })))
-    }
+   }
 
     fetchFilteredBooks = (event) => {
     	if (event.target.value !== '') {
     		BooksAPI.search(event.target.value).then((books) => {
     			if (books.length > 0) {
-    				console.log('DEBUG', books)
-    				this.setState({ filteredBooks: books })
-    				// this.checkBookStatus()
+    				this.setFilteredBooks(books)
+    			} else {
+    				this.setState({ filteredBooks: [] })
     			}
     			return 0	
     		})
-    		
     	} else {
     		this.setState({ filteredBooks: [] })
     	}
-    }
+   }
 
-    // checkBookStatus = () => {
-    // 	const { filteredBooks, allBooks } = this.state
-    // 	const filteredBooksCopy = [...filteredBooks]
+    setFilteredBooks = (filteredBooks) => {
+    	const { allBooks } = this.state
+    	let tempFilteredBooks = []
 
-    // 	allBooks.map((bookInShelf) => { 
-    // 		filteredBooksCopy.map((filteredBook) => {
-    // 			if (bookInShelf.id === filteredBook.id) {
-    // 				filteredBook = {...filteredBook, shelf: bookInShelf.shelf}
-    // 			}    		
-    // 			return 0
-    // 		})
-    // 		return 0
-    // 	})
-    // 	console.log('DEBUG', filteredBooksCopy)
+    	filteredBooks = filteredBooks.map((book) => book = { ...book, shelf: strings.none_value })
+
+    	tempFilteredBooks = filteredBooks.map((filteredBook) => {allBooks.map((bookInShelf) => {
+    			if (bookInShelf.id === filteredBook.id) {
+    				filteredBook = { ...filteredBook, shelf: bookInShelf.shelf }
+    			}
+    			return 0
+    		})
+    		return filteredBook
+    	})
     	
-    // 	this.setState(() => ({ filteredBooks: filteredBooksCopy }))
-    // }
+    	this.setState(() => ({ filteredBooks: tempFilteredBooks }))
+    }
 
    render() {
    	const { allBooks, filteredBooks } = this.state
