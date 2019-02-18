@@ -2,9 +2,11 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 
 class SearchBar extends Component{
+
 	componentDidMount(){ 
 		this.props.cleanFilteredBooks()
 	}
+	
 	render(){
 		return(
 			<div className="search-books-bar">
