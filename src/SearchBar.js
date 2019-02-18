@@ -3,10 +3,10 @@ import { Link } from 'react-router-dom'
 
 class SearchBar extends Component{
 
-	componentDidMount(){ 
+	componentWillUnmount(){ 
 		this.props.cleanFilteredBooks()
 	}
-	
+
 	render(){
 		return(
 			<div className="search-books-bar">

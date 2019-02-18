@@ -9,12 +9,19 @@ import SearchBar from './SearchBar.js'
 import { Link } from 'react-router-dom'
 import { Route } from 'react-router-dom'
 
+import AwesomeDebouncePromise from 'awesome-debounce-promise';
+
 class BooksApp extends React.Component {
+
 	constructor(props) {
 		super(props);
       this.updateBookInShelfStatus = this.updateBookInShelfStatus.bind(this)
       this.fetchFilteredBooks = this.fetchFilteredBooks.bind(this)
       this.setFilteredBooks = this.setFilteredBooks.bind(this)
+
+      // Create debounced search function 
+      this.searchDebounced = AwesomeDebouncePromise(BooksAPI.search, 500)
+      this.searchResults = []
    }
 
    state = {
@@ -40,7 +47,7 @@ class BooksApp extends React.Component {
       })
    }
 
-    addBookToShelf = (book, shelf) => {
+   addBookToShelf = (book, shelf) => {
     	// update the local object status, call the API in order to update it also in 
     	// the server and add it to the allBooks array localy. Used in Shelf when it's
     	// attached to search activity
@@ -49,17 +56,17 @@ class BooksApp extends React.Component {
     		this.setState((prevState) => ({ allBooks: [...prevState.allBooks, book] })))
    }
 
-    fetchFilteredBooks = (event) => {
+   fetchFilteredBooks = async (event) => {
     	let value = event.target.value
-    	if (value !== '') {
-    		BooksAPI.search(value).then((books) => {
-    			if (books.length > 0) {
-    				this.setFilteredBooks(books)
-    			} else {
-    				this.setState({ filteredBooks: [] })
-    			}
-    			return 0	
-    		})
+
+    	// Apply debounce in order to avoid unnacessary API calls.
+    	if (value !== ''){
+    		this.searchResults = await this.searchDebounced(value)
+	    	if (this.searchResults.length > 0) {
+				this.setFilteredBooks(this.searchResults)
+			} else {
+				this.setState({ filteredBooks: [] })
+			}
     	} else {
     		this.setState({ filteredBooks: [] })
     	}
@@ -87,6 +94,7 @@ class BooksApp extends React.Component {
 
    render() {
    	const { allBooks, filteredBooks } = this.state
+   	console.log('DEBUG', 'rendered')
    	return (
 			<div className="app">
 				<Route exact path='/' render={() => (
