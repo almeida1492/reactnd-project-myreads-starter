@@ -35,12 +35,15 @@ class BooksApp extends React.Component {
          	? book.shelf = shelf
 				: 0)
 
-            this.setState(() => ({ allBooks: allBooksCopy }))
-            return 0
+         this.setState(() => ({ allBooks: allBooksCopy }))
+         return 0
       })
    }
 
     addBookToShelf = (book, shelf) => {
+    	// update the local object status, call the API in order to update it also in 
+    	// the server and add it to the allBooks array localy. Used in Shelf when it's
+    	// attached to search activity
     	book.shelf = shelf
     	BooksAPI.update(book, shelf).then((res) => 
     		this.setState((prevState) => ({ allBooks: [...prevState.allBooks, book] })))
@@ -51,7 +54,7 @@ class BooksApp extends React.Component {
     	if (value !== '') {
     		BooksAPI.search(value).then((books) => {
     			if (books.length > 0) {
-    				this.setFilteredBooks(books, value)
+    				this.setFilteredBooks(books)
     			} else {
     				this.setState({ filteredBooks: [] })
     			}
@@ -62,7 +65,11 @@ class BooksApp extends React.Component {
     	}
    }
 
-    setFilteredBooks = (filteredBooks, value) => {
+    setFilteredBooks = (filteredBooks) => {
+    	// this function compares the two arrays (allBooks and the brand new filteredBooks)
+    	// in order to check if there are filtered books that are already in a shelf. If it 
+    	// finds it, it changes the status of that book in the filteredBooks array so it can
+    	// be properly displayed when the data reaches the Book component
     	const { allBooks } = this.state
 
     	filteredBooks = filteredBooks.map((filteredBook) => {
@@ -76,10 +83,6 @@ class BooksApp extends React.Component {
     		return filteredBook
     	})	
     	this.setState(() => ({ filteredBooks: filteredBooks }))
-    }
-
-    cleanFilteredBooks = () => {
-    	this.setState({ filteredBooks: [] })
     }
 
    render() {
@@ -117,7 +120,7 @@ class BooksApp extends React.Component {
 					<div className="search-books">
 						<SearchBar 
 							fetchFilteredBooks={ this.fetchFilteredBooks }
-							cleanFilteredBooks={this.cleanFilteredBooks}/>
+							cleanFilteredBooks={() => this.setState({ filteredBooks: [] })}/>
 						<Shelf
 							title=''
 							books={ filteredBooks }
