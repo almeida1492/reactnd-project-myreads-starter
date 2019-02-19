@@ -41,16 +41,6 @@ class BooksApp extends React.Component {
 		BooksAPI.getAll().then((books) => this.setState({ allBooks: books }));
 	}
 
-	shouldComponentUpdate(nextProps, nextState) {
-		/*if the application use setState to inform that it's starting a 
-		remote request, it doesn't re-render the UI*/
-
-		if (nextState.isRequesting === true) {
-			return false;
-		}
-		return true;
-	}
-
     updateBookInShelfStatus = (book, shelf) => {
 		const { allBooks } = this.state;
 		const allBooksCopy = [...allBooks];
