@@ -9,18 +9,18 @@ class Book extends Component{
 	}
 
 	getThumbnailUrl = () => {
-		const { data } = this.props
-		let imageUrl = ''
+		const { data } = this.props;
+		let imageUrl = '';
 		if (data.imageLinks !== undefined) {
 			imageUrl = `url("${data.imageLinks.smallThumbnail}")`
 		}
-		return imageUrl
+		return imageUrl;
 	}
 
 	render(){
-		const { data, onShelfChange, onBookClick } = this.props
-		const imageUrl = this.getThumbnailUrl()
-		this.getThumbnailUrl()
+		const { data, onShelfChange, onBookClick } = this.props;
+		const imageUrl = this.getThumbnailUrl();
+		this.getThumbnailUrl();
 		return(
 			<div className="book">
 				<div className="book-top">

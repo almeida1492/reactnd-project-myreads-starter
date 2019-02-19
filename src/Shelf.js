@@ -3,7 +3,7 @@ import Book from './Book'
 
 const Shelf = (props) => {
 
-	const { books, title, onShelfChange, onBookClick } = props
+	const { books, title, onShelfChange, onBookClick } = props;
 
 	return (
 		<div className="bookshelf">

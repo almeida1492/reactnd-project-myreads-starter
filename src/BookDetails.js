@@ -4,17 +4,17 @@ import Dialog from '@material-ui/core/Dialog'
 class BookDetails extends Component {
 
     getThumbnailUrl = () => {
-        const { data } = this.props
-        let imageUrl = ''
+        const { data } = this.props;
+        let imageUrl = '';
         if (data.imageLinks !== undefined) {
             imageUrl = `url("${data.imageLinks.smallThumbnail}")`
         }
-        return imageUrl
+        return imageUrl;
     }
 
     render() {
         const { onClose, open, data } = this.props;
-        const imageUrl = this.getThumbnailUrl()
+        const imageUrl = this.getThumbnailUrl();
         return (
             <Dialog open={open} onClose={onClose}>
                 <div className="book-details-body">
