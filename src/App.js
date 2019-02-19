@@ -9,6 +9,13 @@ import { Route } from 'react-router-dom'
 import AwesomeDebouncePromise from 'awesome-debounce-promise'
 import BookDetails from './BookDetails.js'
 
+/*REVISOR!!! informo que utilizei a lib awesome-debounce-promise para 
+otimizar o código ao evitar visitas desnecessárias ao servidor
+durante a busca por livros. Adicionei também uma funcionalidade 
+extra que é a exposição de informações contidas nos livros. Para 
+visualizá-las, basta que se clique na capa de qualquer livro em 
+qualquer uma das estantes (inclusive aquela da busca).*/
+
 class BooksApp extends React.Component {
 
 	constructor(props) {
