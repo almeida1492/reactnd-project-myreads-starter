@@ -18,13 +18,16 @@ class Book extends Component{
 	}
 
 	render(){
-		const { data, onShelfChange } = this.props
+		const { data, onShelfChange, onBookClick } = this.props
 		const imageUrl = this.getThumbnailUrl()
 		this.getThumbnailUrl()
 		return(
 			<div className="book">
 				<div className="book-top">
-					<div className="book-cover" style={{ width: 128, height: 193, backgroundImage: imageUrl }}></div>
+					<div 
+						className="book-cover" 
+						onClick={() => onBookClick(data)} 
+						style={{ width: 128, height: 193, backgroundImage: imageUrl }}/>
 					<div className="book-shelf-changer">
 						<select defaultValue={data.shelf} onChange={(e) => onShelfChange(data, e.target.value)}>
 							<option value={strings.move_value} disabled> {strings.move_title} </option>

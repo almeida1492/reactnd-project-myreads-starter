@@ -1,15 +1,13 @@
 import React from 'react'
 import * as BooksAPI from './BooksAPI'
-import Shelf from './Shelf'
+import Shelf from './Shelf.js'
 import './App.css'
-
 import strings from './resources/strings.js'
 import SearchBar from './SearchBar.js'
-
 import { Link } from 'react-router-dom'
 import { Route } from 'react-router-dom'
-
-import AwesomeDebouncePromise from 'awesome-debounce-promise';
+import AwesomeDebouncePromise from 'awesome-debounce-promise'
+import BookDetails from './BookDetails.js'
 
 class BooksApp extends React.Component {
 
@@ -18,6 +16,7 @@ class BooksApp extends React.Component {
       this.updateBookInShelfStatus = this.updateBookInShelfStatus.bind(this)
       this.fetchFilteredBooks = this.fetchFilteredBooks.bind(this)
       this.setFilteredBooks = this.setFilteredBooks.bind(this)
+      this.handleBookClick = this.handleBookClick.bind(this)
 
       // Create debounced search function 
       this.searchDebounced = AwesomeDebouncePromise(BooksAPI.search, 500)
@@ -27,6 +26,8 @@ class BooksApp extends React.Component {
    state = {
    	allBooks: [],
    	filteredBooks: [],
+   	isBookDetailsopen: false,
+   	bookDetailsData: {}
    }
 
    componentDidMount() {
@@ -59,7 +60,7 @@ class BooksApp extends React.Component {
    fetchFilteredBooks = async (event) => {
     	let value = event.target.value
 
-    	// Apply debounce in order to avoid unnacessary API calls.
+    	// apply debounce in order to avoid unnacessary API calls.
     	if (value !== ''){
     		this.searchResults = await this.searchDebounced(value)
 	    	if (this.searchResults.length > 0) {
@@ -90,11 +91,22 @@ class BooksApp extends React.Component {
     		return filteredBook
     	})	
     	this.setState(() => ({ filteredBooks: filteredBooks }))
-    }
+   }
+
+   handleBookClick = (data) => {
+		this.setState({
+			isBookDetailsopen: true,
+			bookDetailsData: data
+		});
+		console.log('DEBUG', data)
+  	}
+
+	handleBookDetailsClose = (value) => {
+		this.setState({ isBookDetailsopen: false });
+	}
 
    render() {
-   	const { allBooks, filteredBooks } = this.state
-   	console.log('DEBUG', 'rendered')
+   	const { allBooks, filteredBooks, bookDetailsData } = this.state
    	return (
 			<div className="app">
 				<Route exact path='/' render={() => (
@@ -106,15 +118,18 @@ class BooksApp extends React.Component {
 							<Shelf
 								title={strings.currently_reading_title}
 								books={allBooks.filter(book => book.shelf === strings.currently_reading_value)}
-								onShelfChange={this.updateBookInShelfStatus}/>
+								onShelfChange={this.updateBookInShelfStatus}
+								onBookClick={this.handleBookClick}/>
 							<Shelf
 								title={strings.want_to_read_title}
 								books={allBooks.filter(book => book.shelf === strings.want_to_read_value)}
-								onShelfChange={this.updateBookInShelfStatus}/>
+								onShelfChange={this.updateBookInShelfStatus}
+								onBookClick={this.handleBookClick}/>
 							<Shelf
 								title={strings.read_title}
 								books={allBooks.filter(book => book.shelf === strings.read_value)}
-								onShelfChange={this.updateBookInShelfStatus}/>
+								onShelfChange={this.updateBookInShelfStatus}
+								onBookClick={this.handleBookClick}/>
 						</div>
 						<div className="open-search">
 							<Link to='/search' className='search-books-link'>
@@ -132,9 +147,14 @@ class BooksApp extends React.Component {
 						<Shelf
 							title=''
 							books={ filteredBooks }
-							onShelfChange={ this.addBookToShelf }/>
+							onShelfChange={ this.addBookToShelf }
+							onBookClick={this.handleBookClick}/>
 					</div>
 				)}/>
+				<BookDetails 
+					open={this.state.isBookDetailsopen}
+					onClose={this.handleBookDetailsClose}
+					data={bookDetailsData}/>
 			</div>
 		)
 	}
