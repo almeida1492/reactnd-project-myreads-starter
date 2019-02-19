@@ -28,20 +28,30 @@ class BooksApp extends React.Component {
 		// Create debounced search function 
 		this.searchDebounced = AwesomeDebouncePromise(BooksAPI.search, 500);
 		this.searchResults = [];
-   }
+    }
 
-   state = {
-   	allBooks: [],
-   	filteredBooks: [],
-   	isBookDetailsopen: false,
-   	bookDetailsData: {}
-   }
+	state = {
+		allBooks: [],
+		filteredBooks: [],
+		isBookDetailsopen: false,
+		bookDetailsData: {}
+	}
 
-   componentDidMount() {
+    componentDidMount() {
 		BooksAPI.getAll().then((books) => this.setState({ allBooks: books }));
 	}
 
-   updateBookInShelfStatus = (book, shelf) => {
+	shouldComponentUpdate(nextProps, nextState) {
+		/*if the application use setState to inform that it's starting a 
+		remote request, it doesn't re-render the UI*/
+
+		if (nextState.isRequesting === true) {
+			return false;
+		}
+		return true;
+	}
+
+    updateBookInShelfStatus = (book, shelf) => {
 		const { allBooks } = this.state;
 		const allBooksCopy = [...allBooks];
 
@@ -52,30 +62,26 @@ class BooksApp extends React.Component {
 			this.setState(() => ({ allBooks: allBooksCopy }))
 			return 0
 		});
-   }
+    }
 
-   addBookToShelf = (book, shelf) => {
+    addBookToShelf = (book, shelf) => {
 		/*update the local object status, call the API in order to update 
 		it also in the server and add it to the @param {array} allBooks 
 		array localy. Used in Shelf when it's attached to search activity*/
     	book.shelf = shelf;
     	BooksAPI.update(book, shelf).then((res) => 
     		this.setState((prevState) => ({ allBooks: [...prevState.allBooks, book] })));
-   }
+    }
 
-   fetchFilteredBooks = async (event) => {
+    fetchFilteredBooks = async (event) => {
     	let value = event.target.value;
 
     	// apply debounce in order to avoid unnacessary API calls.
-    	if (value !== ''){
-    		this.searchResults = await this.searchDebounced(value);
-    		this.searchResults.length > 0 
-    			? this.setFilteredBooks(this.searchResults) 
-    			: this.setState({ filteredBooks: [] })
-    	} else {
-    		this.setState({ filteredBooks: [] })
-    	}
-   }
+    	this.searchResults = await this.searchDebounced(value);
+		this.searchResults !== undefined
+			? this.setFilteredBooks(this.searchResults) 
+			: this.setState({ filteredBooks: [] });
+    }
 
     setFilteredBooks = (filteredBooks) => {
 		/*this function compares @param {array} allBooks and the brand 
@@ -85,7 +91,6 @@ class BooksApp extends React.Component {
 		so it can be properly displayed when the data reaches the Book 
 		component*/
     	const { allBooks } = this.state;
-
     	filteredBooks = filteredBooks.map((filteredBook) => {
     		filteredBook = { ...filteredBook, shelf: strings.none_value }
     		allBooks.map((bookInShelf) => {
@@ -97,9 +102,9 @@ class BooksApp extends React.Component {
     		return filteredBook
     	});	
     	this.setState(() => ({ filteredBooks: filteredBooks }));
-   }
+    }
 
-   handleBookClick = (data) => {
+   	handleBookClick = (data) => {
 		this.setState({
 			isBookDetailsopen: true,
 			bookDetailsData: data
@@ -110,7 +115,7 @@ class BooksApp extends React.Component {
 		this.setState({ isBookDetailsopen: false });
 	}
 
-   render() {
+   	render() {
    	const { allBooks, filteredBooks, bookDetailsData } = this.state;
    	return (
 			<div className="app">
